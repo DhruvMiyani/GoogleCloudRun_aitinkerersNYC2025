@@ -58,24 +58,36 @@ This project creates AI agents based on popular podcast host personalities (Joe 
 pip install torch transformers datasets peft accelerate bitsandbytes trl opik
 ```
 
-### Training Persona Agents
-1. **Prepare datasets** - Process podcast transcripts into instruction format
-2. **Fine-tune adapters** - Train LoRA adapters for each personality
-3. **Deploy inference** - Set up Cloud Run GPU endpoints
-4. **Orchestrate debates** - Use A2A SDK for multi-agent interactions
+### Quick Start with Real Data
+```bash
+# 1. Setup real Joe Rogan transcript data
+./scripts/setup_real_data.sh
 
-### Quick Start
-```python
-# Load persona agent
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from peft import PeftModel
+# 2. Train models
+./scripts/run_training.sh
 
-base_model = AutoModelForCausalLM.from_pretrained("google/gemma-1.1-2b-it")
-joe_agent = PeftModel.from_pretrained(base_model, "adapters/joe_rogan")
+# 3. Test locally
+uvicorn api.server:app --host 0.0.0.0 --port 8080
+python3 test_api.py
 
-# Generate response
-prompt = "What do you think about AI regulation?"
-response = joe_agent.generate(prompt, max_new_tokens=200)
+# 4. Deploy to Cloud Run
+./scripts/deploy_cloudrun.sh
+```
+
+### Manual Training Steps
+1. **Download real transcripts** - Get actual Joe Rogan podcast data
+2. **Process data** - Convert transcripts into training format
+3. **Fine-tune adapters** - Train LoRA adapters for each personality
+4. **Deploy inference** - Set up Cloud Run GPU endpoints
+5. **Test debates** - Use FastAPI endpoints for agent interactions
+
+### Using Real Transcript Data
+```bash
+# Download real Joe Rogan transcripts (10 episodes)
+python3 scripts/download_transcripts.py --max-episodes 10
+
+# Or create sample data for testing
+python3 scripts/prepare_data.py --create-samples
 ```
 
 ## 📊 Dataset Structure
