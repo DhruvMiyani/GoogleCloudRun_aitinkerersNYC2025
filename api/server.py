@@ -79,14 +79,14 @@ def load_models():
             trust_remote_code=True
         )
         
-        # Load persona adapters
+        # Load persona adapters (fallback to base model if not available)
         persona_configs = {
             "joe": "/app/models/joe",
             "lex": "/app/models/lex"
         }
         
         for persona, adapter_path in persona_configs.items():
-            if os.path.exists(adapter_path):
+            if os.path.exists(adapter_path) and os.path.exists(os.path.join(adapter_path, "adapter_config.json")):
                 logger.info(f"Loading {persona} adapter from {adapter_path}")
                 try:
                     persona_models[persona] = PeftModel.from_pretrained(
@@ -94,13 +94,14 @@ def load_models():
                         adapter_path,
                         is_trainable=False
                     )
-                    logger.info(f"✅ {persona} model loaded successfully")
+                    logger.info(f"✅ {persona} fine-tuned model loaded successfully")
                 except Exception as e:
                     logger.warning(f"Failed to load {persona} adapter: {e}")
                     # Fallback to base model
                     persona_models[persona] = base_model
+                    logger.info(f"Using base model for {persona}")
             else:
-                logger.warning(f"Adapter not found at {adapter_path}, using base model")
+                logger.warning(f"No trained adapter found for {persona}, using base model")
                 persona_models[persona] = base_model
         
         models_loaded = True

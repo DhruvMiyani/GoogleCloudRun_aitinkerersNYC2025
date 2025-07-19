@@ -4,7 +4,7 @@
 set -e
 
 # Configuration
-PROJECT_ID=${GOOGLE_CLOUD_PROJECT:-"your-project-id"}
+PROJECT_ID=${GOOGLE_CLOUD_PROJECT:-"smart-cove-466418-k1"}
 SERVICE_NAME="podcast-persona-api"
 REGION="us-central1"
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
