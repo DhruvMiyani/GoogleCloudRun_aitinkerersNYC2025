@@ -191,6 +191,17 @@ async def list_models():
         ]
     }
 
+@app.on_event("startup")
+async def startup_event():
+    """Load model on startup"""
+    try:
+        load_joe_rogan_model()
+        logger.info("✅ Joe Rogan model loaded successfully")
+    except Exception as e:
+        logger.error(f"❌ Failed to load model: {e}")
+        # Don't fail startup, just log the error
+
 if __name__ == "__main__":
     logger.info("🚀 Starting Joe Rogan Persona API Server...")
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run(app, host="0.0.0.0", port=port)

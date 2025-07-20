@@ -1,0 +1,23 @@
+# Simple Dockerfile for Joe Rogan API
+FROM --platform=linux/amd64 python:3.11-slim
+
+WORKDIR /app
+
+# Install minimal dependencies
+RUN pip install fastapi uvicorn
+
+# Copy simple API
+COPY simple_joe_api.py .
+
+# Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN chown -R appuser:appuser /app
+USER appuser
+
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8080/health')" || exit 1
+
+CMD ["python", "simple_joe_api.py"]

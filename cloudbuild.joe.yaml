@@ -1,0 +1,5 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-f', 'Dockerfile.joe_rogan', '-t', 'gcr.io/arched-glass-466422-u9/joe-rogan-persona', '.']
+images:
+- 'gcr.io/arched-glass-466422-u9/joe-rogan-persona'
