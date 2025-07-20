@@ -12,7 +12,7 @@ mkdir -p models/joe models/lex
 echo "Training Joe Rogan persona..."
 python3 scripts/train_lora.py \
     --persona joe \
-    --data data/joe_transcripts.json \
+    --data data/joe/joe_transcripts.json \
     --output models/joe \
     --epochs 3 \
     --batch_size 4
@@ -23,7 +23,7 @@ echo "✅ Joe Rogan training complete!"
 echo "Training Lex Fridman persona..."
 python3 scripts/train_lora.py \
     --persona lex \
-    --data data/lex_transcripts.json \
+    --data data/lexfridman/lex_transcripts_final.json \
     --output models/lex \
     --epochs 3 \
     --batch_size 4

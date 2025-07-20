@@ -41,7 +41,7 @@ def main():
     # Training configuration
     config = {
         "persona": "joe_rogan",
-        "data_path": "/app/data/joe_transcripts.json",
+        "data_path": "/app/data/joe/joe_transcripts.json",
         "output_dir": "/app/models/joe_rogan",
         "base_model": "google/gemma-1.1-2b-it",
         "epochs": 3,

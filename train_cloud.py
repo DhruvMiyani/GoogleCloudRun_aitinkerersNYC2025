@@ -75,12 +75,12 @@ def main():
     training_jobs = [
         {
             "persona": "joe_rogan",
-            "data_path": "/app/data/joe_transcripts.json",
+            "data_path": "/app/data/joe/joe_transcripts.json",
             "output_dir": "/app/models/joe_rogan"
         },
         {
             "persona": "lex_fridman", 
-            "data_path": "/app/data/lex_transcripts_final.json",
+            "data_path": "/app/data/lexfridman/lex_transcripts_final.json",
             "output_dir": "/app/models/lex_fridman"
         }
     ]

@@ -29,7 +29,7 @@ else
 fi
 
 echo "📊 Training Data Summary:"
-echo "Joe Rogan examples: $(jq length data/joe_transcripts.json)"
+echo "Joe Rogan examples: $(jq length data/joe/joe_transcripts.json)"
 echo "Lex Fridman examples: $(jq length $LEX_DATA_FILE)"
 
 # Training parameters
@@ -50,7 +50,7 @@ echo ""
 echo "🎙️ Training Joe Rogan persona model..."
 python3 scripts/train_persona_lora.py \
     --persona joe_rogan \
-    --data_path data/joe_transcripts.json \
+    --data_path data/joe/joe_transcripts.json \
     --output_dir models/joe_rogan \
     --epochs $EPOCHS \
     --batch_size $BATCH_SIZE \

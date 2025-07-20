@@ -41,7 +41,7 @@ def main():
     # Training configuration
     config = {
         "persona": "lex_fridman",
-        "data_path": "/app/data/lex_transcripts_final.json",
+        "data_path": "/app/data/lexfridman/lex_transcripts_final.json",
         "output_dir": "/app/models/lex_fridman",
         "base_model": "google/gemma-1.1-2b-it",
         "epochs": 5,  # More epochs for smaller dataset

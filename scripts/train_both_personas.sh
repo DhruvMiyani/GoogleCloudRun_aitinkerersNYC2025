@@ -11,8 +11,8 @@ mkdir -p models/joe_rogan
 mkdir -p models/lex_fridman
 
 echo "📊 Training Data Summary:"
-echo "Joe Rogan examples: $(jq length data/joe_transcripts.json)"
-echo "Lex Fridman examples: $(jq length data/lex_transcripts_final.json)"
+echo "Joe Rogan examples: $(jq length data/joe/joe_transcripts.json)"
+echo "Lex Fridman examples: $(jq length data/lexfridman/lex_transcripts_final.json)"
 
 # Training parameters
 EPOCHS=3
@@ -41,7 +41,7 @@ fi
 echo "🎙️ Training Joe Rogan persona model..."
 python3 scripts/train_persona_lora.py \
     --persona joe_rogan \
-    --data_path data/joe_transcripts.json \
+    --data_path data/joe/joe_transcripts.json \
     --output_dir models/joe_rogan \
     --epochs $EPOCHS \
     --batch_size $BATCH_SIZE \
@@ -56,7 +56,7 @@ echo ""
 echo "🤖 Training Lex Fridman persona model..."
 python3 scripts/train_persona_lora.py \
     --persona lex_fridman \
-    --data_path data/lex_transcripts_final.json \
+    --data_path data/lexfridman/lex_transcripts_final.json \
     --output_dir models/lex_fridman \
     --epochs $EPOCHS \
     --batch_size $BATCH_SIZE \
@@ -69,12 +69,12 @@ echo "✅ Lex Fridman model training completed!"
 echo ""
 echo "🎉 Both persona models trained successfully!"
 echo "Models saved to:"
-echo "  - models/joe_rogan/ ($(jq length data/joe_transcripts.json) training examples)"
-echo "  - models/lex_fridman/ ($(jq length data/lex_transcripts_final.json) training examples)"
+echo "  - models/joe_rogan/ ($(jq length data/joe/joe_transcripts.json) training examples)"
+echo "  - models/lex_fridman/ ($(jq length data/lexfridman/lex_transcripts_final.json) training examples)"
 echo ""
 echo "🎯 Data Quality:"
-echo "Joe Rogan avg length: $(jq '[.[].response | length] | add / length' data/joe_transcripts.json) chars"
-echo "Lex Fridman avg length: $(jq '[.[].response | length] | add / length' data/lex_transcripts_final.json) chars"
+echo "Joe Rogan avg length: $(jq '[.[].response | length] | add / length' data/joe/joe_transcripts.json) chars"
+echo "Lex Fridman avg length: $(jq '[.[].response | length] | add / length' data/lexfridman/lex_transcripts_final.json) chars"
 echo ""
 echo "Next steps:"
 echo "1. Test the models: python3 scripts/test_persona_models.py"
