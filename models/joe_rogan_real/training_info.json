@@ -1,0 +1,19 @@
+{
+  "persona": "joe_rogan",
+  "base_model": "gpt2",
+  "training_examples": 500,
+  "training_loss": 2.9415942398959367,
+  "training_time_seconds": 163.242963,
+  "training_epochs": 3,
+  "learning_rate": 5e-05,
+  "batch_size": 2,
+  "gradient_accumulation_steps": 4,
+  "created": "2025-07-20T03:00:40.754615",
+  "device": "mps",
+  "model_type": "LoRA fine-tuned",
+  "trainable_parameters": {
+    "total": 126062592,
+    "trainable": 1622016,
+    "percentage": 1.2866751145335804
+  }
+}

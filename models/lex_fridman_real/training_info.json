@@ -1,0 +1,14 @@
+{
+  "persona": "lex_fridman",
+  "base_model": "gpt2",
+  "training_examples": 200,
+  "training_loss": 3.903742472330729,
+  "training_time_seconds": 64.760713,
+  "training_epochs": 3,
+  "learning_rate": 5e-05,
+  "batch_size": 2,
+  "gradient_accumulation_steps": 4,
+  "created": "2025-07-20T03:03:23.396230",
+  "device": "mps",
+  "model_type": "LoRA fine-tuned"
+}
