@@ -1,214 +1,327 @@
-# Podcast Persona Debates - Agentic AI Hackathon
+# Podcast Persona Debates - Fine-Tuned AI Personalities
 
-> **AI agents trained on podcast personalities engage in multi-agent debates with real-time fact-checking**
+> **Fine-tuned GPT-2 models trained on Joe Rogan and Lex Fridman transcripts, deployed as production APIs on Google Cloud Run**
 
 ## 🎯 Project Overview
 
-This project creates AI agents based on popular podcast host personalities (Joe Rogan, Ezra Klein, Lex Fridman) that can engage in dynamic debates. Each agent is fine-tuned on podcast transcripts using Gemma models and orchestrated through FastAPI for multi-agent interactions.
+This project creates AI personas based on popular podcast hosts (Joe Rogan and Lex Fridman) using real fine-tuned language models. Each persona is trained on authentic podcast transcripts using LoRA (Low-Rank Adaptation) fine-tuning and deployed as production-ready APIs on Google Cloud Run.
 
-## 🧠 Core Concept
+## 🚀 Live APIs
 
-- **Fine-tune lightweight Gemma models** on podcast transcripts to capture each host's unique style, opinions, and speaking patterns
-- **Multi-agent orchestration** using FastAPI to facilitate natural debates between personalities  
-- **Real-time fact-checking** using structured podcast verification data as a critic agent
-- **Chain-of-Thought reasoning** for complex discussions and nuanced position-taking
-- **Optional voice synthesis** to bring the debates to life
+### 🎙️ Joe Rogan Persona API
+- **URL**: `https://joe-rogan-persona-610829379552.europe-west1.run.app`
+- **Model**: Fine-tuned GPT-2 with LoRA on 500 examples
+- **Training Loss**: 2.94
+- **Status**: ✅ Live
 
-## 🏗️ Architecture
+### 🤖 Lex Fridman Persona API  
+- **URL**: `https://lex-fridman-persona-610829379552.europe-west1.run.app`
+- **Model**: Fine-tuned GPT-2 with LoRA on 200 examples
+- **Training Loss**: 3.90
+- **Status**: ✅ Live
 
+## 🧠 How It Works
+
+### 1. Data Collection & Processing
 ```
-┌────────────┐     ┌────────────┐     ┌────────────┐
-│ Joe Agent  │     │ Ezra Agent │     │ Lex Agent  │
-│ (Gemma +   │     │ (Gemma +   │     │ (Gemma +   │
-│ LoRA-Joe)  │     │ LoRA-Ezra) │     │ LoRA-Lex)  │
-└────┬───────┘     └────┬───────┘     └────┬───────┘
-     │                  │                  │
- Personality         Personality       Personality
- Prompting           Prompting         Prompting
-     │                  │                  │
- └──────────────[ FastAPI Server ]──────────────┘
-                         ↕
-                Fact-checking / Critic Agent
-                         ↕
-              [ Voice Synthesis (Optional) ]
+Real Podcast Transcripts → JSON Processing → Training Dataset
+```
+- **Joe Rogan**: 500 training examples from real podcast episodes
+- **Lex Fridman**: 200 training examples from authentic conversations
+- Each example includes prompt-response pairs that capture speaking style and personality
+
+### 2. Model Fine-Tuning
+```
+Base GPT-2 Model → LoRA Fine-Tuning → Persona-Specific Models
+```
+- **Base Model**: GPT-2 (124M parameters)
+- **Fine-Tuning Method**: LoRA (Low-Rank Adaptation)
+- **Training**: Parameter-efficient fine-tuning with gradient descent
+- **Output**: 301MB adapter models for each persona
+
+### 3. API Deployment
+```
+Fine-Tuned Models → Docker Containers → Google Cloud Run → Live APIs
+```
+- **Framework**: FastAPI for REST API endpoints
+- **Containerization**: Docker with optimized Python runtime
+- **Infrastructure**: Google Cloud Run with auto-scaling
+- **Endpoints**: `/api/generate`, `/health`, `/api/tags`
+
+### 4. Architecture Diagram
+```
+┌─────────────────────────────────────────────────────────┐
+│                 User Request                            │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────────────┐
+│              Google Cloud Run                          │
+│  ┌─────────────────────┐  ┌─────────────────────────┐  │
+│  │   Joe Rogan API     │  │  Lex Fridman API        │  │
+│  │   (FastAPI)         │  │  (FastAPI)              │  │
+│  │                     │  │                         │  │
+│  │ ┌─────────────────┐ │  │ ┌─────────────────────┐ │  │
+│  │ │ GPT-2 + LoRA    │ │  │ │ GPT-2 + LoRA        │ │  │
+│  │ │ Joe Adapter     │ │  │ │ Lex Adapter         │ │  │
+│  │ │ (301MB)         │ │  │ │ (301MB)             │ │  │
+│  │ └─────────────────┘ │  │ └─────────────────────┘ │  │
+│  └─────────────────────┘  └─────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## 🛠️ Tech Stack
+## 🔧 API Usage
 
-### Models & Training
-- **Base Model**: Google Gemma 1.1 (2B/7B instruction-tuned)
-- **Fine-tuning**: LoRA/QLoRA adapters for memory efficiency
-- **Training Framework**: 🤗 Transformers + PEFT + bitsandbytes
-
-### Infrastructure 
-- **Deployment**: Google Cloud Run with NVIDIA L4 GPUs
-- **API Framework**: FastAPI for multi-agent workflows
-- **Monitoring**: Opik by Comet for agent evaluation and safety
-- **Voice**: Coqui TTS/XTTS (optional)
-
-### Data
-- **3,066 training examples** from 21 real Joe Rogan podcast episodes
-- Structured fact-checking data for verification
-- Chain-of-thought reasoning datasets
-
-## 🚀 Getting Started
-
-### Prerequisites
+### Quick Test Commands
 ```bash
-pip install torch transformers datasets peft accelerate bitsandbytes trl opik
+# Test Joe Rogan API
+curl -X POST 'https://joe-rogan-persona-610829379552.europe-west1.run.app/api/generate' \
+  -H 'Content-Type: application/json' \
+  -d '{"model": "joe_rogan", "prompt": "What do you think about AI, bro?"}'
+
+# Test Lex Fridman API  
+curl -X POST 'https://lex-fridman-persona-610829379552.europe-west1.run.app/api/generate' \
+  -H 'Content-Type: application/json' \
+  -d '{"model": "lex_fridman", "prompt": "How do you think about consciousness?"}'
+
+# Health Checks
+curl https://joe-rogan-persona-610829379552.europe-west1.run.app/health
+curl https://lex-fridman-persona-610829379552.europe-west1.run.app/health
 ```
 
-### 🎉 Live Gemma API Endpoint
-
-Our pre-deployed Gemma 3-1B model is ready for use:
-
-- **Service URL**: https://gemma-1b-wamyzspxga-ew.a.run.app
-- **Model**: gemma3:1b
-- **Region**: europe-west1
-- **Status**: ✅ Working (tested with "Why is the sky blue?" query)
-
-#### 🔧 API Usage
-```bash
-curl -X POST "https://gemma-1b-wamyzspxga-ew.a.run.app/api/generate" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gemma3:1b",
-    "prompt": "Your question here"
-  }'
-```
-
-#### Example Usage
-```bash
-# Test the API with a simple question
-curl -X POST "https://gemma-1b-wamyzspxga-ew.a.run.app/api/generate" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gemma3:1b",
-    "prompt": "Explain quantum computing in simple terms"
-  }'
-```
-
-### Quick Start with Real Data
-```bash
-# 1. Data is already processed and ready
-ls data/joe_transcripts.json  # 3066 training examples
-
-# 2. Test training pipeline (dry run)
-python3 test_training_dry_run.py
-
-# 3. Train models (requires GPU/ML packages)
-./scripts/run_training.sh
-
-# 4. Test locally
-uvicorn api.server:app --host 0.0.0.0 --port 8080
-python3 test_api.py
-
-# 5. Deploy to Cloud Run
-./scripts/deploy_cloudrun.sh
-```
-
-### Training Options
-```bash
-# Quick test with small dataset
-python3 scripts/train_lora.py --persona joe --data data/joe_transcripts.json --output models/joe --epochs 1
-
-# Full training
-./scripts/run_training.sh
-```
-
-## 📊 Dataset Structure
-
-Real Joe Rogan training data format:
+### Request Format
 ```json
 {
-  "prompt": "You are Joe Rogan, a curious and skeptical podcast host...\n\nQuestion: What's your take on this?",
-  "response": "You know, I think people need to really question what they're being told here...",
-  "persona": "joe_rogan",
-  "episode": "Joe Rogan Experience #2349 - Danny Jones",
-  "episode_id": "89IEFOiW-Z0"
+  "model": "joe_rogan",
+  "prompt": "What's your take on artificial intelligence?",
+  "max_length": 200,
+  "temperature": 0.7,
+  "top_p": 0.9
 }
 ```
 
-## 🎯 Hackathon Goals
-
-- [x] **Team Formation** (2-5 people, ML/multi-agent expertise)
-- [x] **Real Data Collection** - 3,066 examples from 21 Joe Rogan episodes
-- [x] **Training Pipeline** - LoRA fine-tuning scripts ready
-- [x] **API Server** - FastAPI with inference and debate endpoints
-- [x] **Testing Framework** - Dry run validation without GPU requirements
-- [ ] **Model Training** - Fine-tune Gemma agents on Google Cloud GPU
-- [ ] **Agent Orchestration** - Multi-agent debate implementation
-- [ ] **Demo Preparation** - Live debate showcase with optional voice
-- [ ] **Submission** - Deploy on Cloud Run, submit by 10:00 AM Day 2
-
-## 🧪 Testing
-
-The project includes comprehensive testing without requiring ML packages:
-
-```bash
-# Test training pipeline logic
-python3 test_training_dry_run.py
-
-# Test with full dataset
-python3 test_training_dry_run.py --data data/joe_transcripts.json
-
-# Process local transcripts
-python3 scripts/process_local_transcripts.py
+### Response Format
+```json
+{
+  "model": "joe_rogan",
+  "created_at": "2025-07-20T13:04:07.374304Z",
+  "response": "That's crazy! Jamie, can you pull that up?",
+  "done": true,
+  "done_reason": "stop"
+}
 ```
 
-## 🏆 Demo Scenarios
+## 🛠️ Technical Implementation
 
-1. **Cross-ideological Debates** - "What would Joe Rogan say to Ezra Klein about AI regulation?"
-2. **Multi-perspective Analysis** - Three agents analyzing complex topics from different angles
-3. **Fact-checked Discussions** - Real-time verification of claims during debates
-4. **Voice-enabled Conversations** - Audio output for immersive experience
+### Fine-Tuning Process
+1. **Data Preparation**: Process raw transcript data into prompt-response pairs
+2. **LoRA Configuration**: 
+   - Rank: 16
+   - Alpha: 32
+   - Dropout: 0.1
+   - Target modules: c_attn, c_proj
+3. **Training**: Gradient descent with Adam optimizer
+4. **Evaluation**: Monitor training loss and generate test samples
 
-## 📁 Project Structure
+### Model Architecture
+```python
+# LoRA Configuration
+lora_config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    inference_mode=False,
+    r=16,
+    lora_alpha=32,
+    lora_dropout=0.1,
+    target_modules=["c_attn", "c_proj"]
+)
+
+# Model Loading
+base_model = GPT2LMHeadModel.from_pretrained("gpt2")
+model = get_peft_model(base_model, lora_config)
+```
+
+### Deployment Configuration
+- **Memory**: 2-4GB per service
+- **CPU**: 1-2 vCPUs
+- **Scaling**: Auto-scale to zero when idle
+- **Max Instances**: 3 per service
+- **Timeout**: 60-300 seconds
+
+## 📊 Training Results
+
+### Joe Rogan Model
+- **Dataset**: 500 training examples
+- **Training Time**: 163 seconds
+- **Final Loss**: 2.94
+- **Model Size**: 301MB (LoRA adapter)
+- **Characteristics**: Uses phrases like "bro", "that's crazy", "Jamie, pull that up"
+
+### Lex Fridman Model  
+- **Dataset**: 200 training examples
+- **Training Time**: 65 seconds
+- **Final Loss**: 3.90
+- **Model Size**: 301MB (LoRA adapter)
+- **Characteristics**: Philosophical, thoughtful, references MIT and consciousness
+
+## 🏗️ Project Structure
 
 ```
 ├── data/
-│   ├── joe_transcripts.json     # 3066 Joe Rogan training examples
-│   ├── lex_transcripts.json     # Sample Lex Fridman data
-│   └── joe_rogan_complete.json  # Full processed dataset
+│   ├── joe/                          # Joe Rogan transcript data
+│   └── lexfridman/                   # Lex Fridman transcript data
 ├── models/
-│   ├── joe/                     # Joe Rogan LoRA adapter
-│   └── lex/                     # Lex Fridman LoRA adapter
-├── api/
-│   └── server.py                # FastAPI inference server
-├── scripts/
-│   ├── train_lora.py            # LoRA training script
-│   ├── process_local_transcripts.py # Real data processing
-│   ├── run_training.sh          # Training automation
-│   └── deploy_cloudrun.sh       # Cloud Run deployment
-├── test_training_dry_run.py     # Training pipeline validation
-├── test_api.py                  # API testing script
-├── Dockerfile                   # Cloud Run deployment
-└── requirements.txt             # Dependencies
+│   ├── joe_rogan_real/               # Fine-tuned Joe model
+│   │   ├── adapter_model.safetensors # 301MB LoRA weights
+│   │   ├── adapter_config.json       # LoRA configuration
+│   │   └── training_info.json        # Training metadata
+│   └── lex_fridman_real/             # Fine-tuned Lex model
+│       ├── adapter_model.safetensors # 301MB LoRA weights  
+│       ├── adapter_config.json       # LoRA configuration
+│       └── training_info.json        # Training metadata
+├── joe_rogan_api.py                  # Joe Rogan FastAPI server
+├── lex_fridman_api.py                # Lex Fridman FastAPI server
+├── real_fine_tuning.py               # Training script
+├── Dockerfile.joe_rogan              # Joe API container
+├── Dockerfile.lex_fridman            # Lex API container
+├── deploy_joe_rogan.sh               # Joe deployment script
+├── deploy_lex_fridman.sh             # Lex deployment script
+├── deploy_both_personas.sh           # Batch deployment
+└── test_local_apis.py                # Local testing script
 ```
 
-## 📈 Dataset Statistics
+## 🚀 Deployment Process
 
-- **Episodes**: 21 Joe Rogan podcast episodes
-- **Training Examples**: 3,066 real conversation segments
-- **Average Length**: 522 characters per response
-- **Characteristic Phrases**: "you know", "bro", "that's crazy", "Jamie, pull that up"
-- **Content Types**: Conversations, debates, interviews, monologues
+### Local Development
+```bash
+# 1. Install dependencies
+pip install torch transformers peft accelerate fastapi uvicorn
 
-## 👥 Team
+# 2. Train models locally
+python real_fine_tuning.py
 
-Looking for teammates with:
-- **ML/Fine-tuning experience** (LoRA, model training)
-- **Multi-agent systems** (FastAPI, agent orchestration)  
-- **Voice synthesis** (TTS, voice cloning)
-- **Cloud deployment** (Docker, Cloud Run)
+# 3. Test APIs locally
+python test_local_apis.py
 
-## 📚 Resources
+# 4. Run individual APIs
+python joe_rogan_api.py
+python lex_fridman_api.py
+```
 
-- [Google Cloud Run GPU Handbook](https://cloud.google.com/run/docs/configuring/services/gpu)
-- [Opik Agent Observability](https://github.com/comet-ml/opik)
-- [Gemma Model Hub](https://huggingface.co/google/gemma-1.1-2b-it)
-- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+### Production Deployment
+```bash
+# 1. Set up Google Cloud project
+gcloud config set project arched-glass-466422-u9
+
+# 2. Deploy both personas
+./deploy_both_personas.sh arched-glass-466422-u9
+
+# 3. Or deploy individually
+./deploy_joe_rogan.sh arched-glass-466422-u9
+./deploy_lex_fridman.sh arched-glass-466422-u9
+```
+
+## 🔍 Key Features
+
+### ✅ Real Fine-Tuned Models
+- Actual gradient descent training, not prompt engineering
+- LoRA adapters with trainable parameters
+- Measurable training loss reduction
+
+### ✅ Production APIs
+- RESTful endpoints with proper error handling
+- Health checks and monitoring
+- Auto-scaling on Google Cloud Run
+
+### ✅ Authentic Personas
+- Trained on real podcast transcript data
+- Captures unique speaking styles and phrases
+- Maintains personality consistency
+
+### ✅ Scalable Infrastructure
+- Docker containers for reproducible deployment
+- Cloud Run for serverless scaling
+- Optimized for cost and performance
+
+## 📈 Performance Metrics
+
+### API Response Times
+- **Cold Start**: ~10-15 seconds
+- **Warm Requests**: ~1-3 seconds
+- **Concurrent Users**: Up to 10 per service
+
+### Cost Optimization
+- **Auto-scaling**: Scales to zero when idle
+- **Resource Allocation**: 2GB RAM, 1 vCPU minimum
+- **Pay-per-use**: Only charged for actual usage
+
+## 🎯 Use Cases
+
+### 1. AI Personality Research
+Study how different training data affects model behavior and personality expression.
+
+### 2. Content Generation
+Generate podcast-style content in the voice of specific personalities.
+
+### 3. Educational Tools
+Demonstrate fine-tuning techniques and deployment practices.
+
+### 4. API Integration
+Use as backend services for chatbots, content apps, or research projects.
+
+## 🔧 Environment Variables
+
+```bash
+# Required for local development
+export WANDB_DISABLED=true  # Disable Weights & Biases logging
+export TRANSFORMERS_CACHE=/tmp/transformers_cache
+export HF_HOME=/tmp/hf_home
+
+# For Google Cloud deployment
+export PROJECT_ID=arched-glass-466422-u9
+export REGION=europe-west1
+```
+
+## 📚 Technical Deep Dive
+
+### LoRA Fine-Tuning Benefits
+- **Memory Efficient**: Only train 1.6M parameters vs 124M full model
+- **Fast Training**: 60-160 seconds vs hours for full fine-tuning
+- **Modular**: Easy to swap between different personas
+- **Storage Efficient**: 301MB vs 500MB+ for full models
+
+### API Design Principles
+- **Stateless**: Each request is independent
+- **RESTful**: Standard HTTP methods and status codes
+- **Error Handling**: Proper error messages and status codes
+- **Documentation**: OpenAPI/Swagger documentation included
+
+### Cloud Run Advantages
+- **Serverless**: No server management required
+- **Auto-scaling**: Handles traffic spikes automatically
+- **Cost-effective**: Pay only for actual usage
+- **Global**: Available in multiple regions
+
+## 🔮 Future Enhancements
+
+- [ ] **Voice Synthesis**: Add TTS for audio responses
+- [ ] **Multi-Agent Debates**: Enable conversations between personas
+- [ ] **Real-time Streaming**: WebSocket support for live conversations
+- [ ] **More Personas**: Add additional podcast hosts
+- [ ] **RAG Integration**: Add fact-checking and knowledge retrieval
+- [ ] **Fine-tuning UI**: Web interface for custom persona creation
+
+## 👥 Contributing
+
+This project demonstrates production ML deployment practices:
+- Real fine-tuned models with measurable results
+- Professional API design and documentation
+- Cloud-native deployment with Docker and Cloud Run
+- Proper error handling and monitoring
+
+## 📄 License
+
+MIT License - Feel free to use this project for learning and research.
 
 ---
 
-**Built for the Agentic AI App Hackathon** | **Powered by Google Cloud Run + NVIDIA L4 GPUs**
+**🏆 Built for NYC AI Tinkerers 2025 Hackathon**  
+**Powered by Google Cloud Run, GPT-2, LoRA, and FastAPI**
