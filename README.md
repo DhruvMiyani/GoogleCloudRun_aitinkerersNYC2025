@@ -4,7 +4,7 @@
 
 ## 🎯 Project Overview
 
-This project creates AI personas based on popular podcast hosts (Joe Rogan and Lex Fridman) using real fine-tuned language models. Each persona is trained on authentic podcast transcripts using LoRA (Low-Rank Adaptation) fine-tuning and deployed as production-ready APIs on Google Cloud Run.
+This project creates AI personas based on popular podcast hosts (Joe Rogan and Lex Fridman) using real fine-tuned language models. Each persona is trained on authentic podcast transcripts using LoRA (Low-Rank Adaptation) fine-tuning and deployed as production-ready APIs on Google Cloud Run. Additionally, we deployed a general-purpose Gemma-1B model for comparison and general knowledge tasks.
 
 ## 🚀 Live APIs
 
@@ -20,6 +20,12 @@ This project creates AI personas based on popular podcast hosts (Joe Rogan and L
 - **Training Loss**: 3.90
 - **Status**: ✅ Live
 
+### 🔍 Gemma-1B General API
+- **URL**: `https://gemma-1b-610829379552.europe-west1.run.app`
+- **Model**: Gemma 3-1B base model (general purpose)
+- **Use Case**: General knowledge and reasoning
+- **Status**: ✅ Live
+
 ## 🧠 How It Works
 
 ### 1. Data Collection & Processing
@@ -30,14 +36,16 @@ Real Podcast Transcripts → JSON Processing → Training Dataset
 - **Lex Fridman**: 200 training examples from authentic conversations
 - Each example includes prompt-response pairs that capture speaking style and personality
 
-### 2. Model Fine-Tuning
+### 2. Model Fine-Tuning & Deployment
 ```
 Base GPT-2 Model → LoRA Fine-Tuning → Persona-Specific Models
+Base Gemma-1B Model → Direct Deployment → General Knowledge API
 ```
-- **Base Model**: GPT-2 (124M parameters)
-- **Fine-Tuning Method**: LoRA (Low-Rank Adaptation)
+- **Persona Models**: GPT-2 (124M parameters) + LoRA adapters
+- **General Model**: Gemma 3-1B (1.6B parameters) 
+- **Fine-Tuning Method**: LoRA (Low-Rank Adaptation) for personas
 - **Training**: Parameter-efficient fine-tuning with gradient descent
-- **Output**: 301MB adapter models for each persona
+- **Output**: 301MB adapter models for each persona + full Gemma deployment
 
 ### 3. API Deployment
 ```
@@ -66,6 +74,16 @@ Fine-Tuned Models → Docker Containers → Google Cloud Run → Live APIs
 │  │ │ (301MB)         │ │  │ │ (301MB)             │ │  │
 │  │ └─────────────────┘ │  │ └─────────────────────┘ │  │
 │  └─────────────────────┘  └─────────────────────────┘  │
+│                                                         │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              Gemma-1B API                       │   │
+│  │            (General Purpose)                    │   │
+│  │                                                 │   │
+│  │ ┌─────────────────────────────────────────────┐ │   │
+│  │ │         Gemma 3-1B Base Model               │ │   │
+│  │ │         (General Knowledge)                 │ │   │
+│  │ └─────────────────────────────────────────────┘ │   │
+│  └─────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -83,9 +101,15 @@ curl -X POST 'https://lex-fridman-persona-610829379552.europe-west1.run.app/api/
   -H 'Content-Type: application/json' \
   -d '{"model": "lex_fridman", "prompt": "How do you think about consciousness?"}'
 
+# Test Gemma-1B General API
+curl -X POST 'https://gemma-1b-610829379552.europe-west1.run.app/api/generate' \
+  -H 'Content-Type: application/json' \
+  -d '{"model": "gemma3:1b", "prompt": "Explain quantum computing in simple terms"}'
+
 # Health Checks
 curl https://joe-rogan-persona-610829379552.europe-west1.run.app/health
 curl https://lex-fridman-persona-610829379552.europe-west1.run.app/health
+curl https://gemma-1b-610829379552.europe-west1.run.app/health
 ```
 
 ### Request Format
