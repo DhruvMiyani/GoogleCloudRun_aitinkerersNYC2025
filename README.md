@@ -58,6 +58,36 @@ This project creates AI agents based on popular podcast host personalities (Joe 
 pip install torch transformers datasets peft accelerate bitsandbytes trl opik
 ```
 
+### 🎉 Live Gemma API Endpoint
+
+Our pre-deployed Gemma 3-1B model is ready for use:
+
+- **Service URL**: https://gemma-1b-wamyzspxga-ew.a.run.app
+- **Model**: gemma3:1b
+- **Region**: europe-west1
+- **Status**: ✅ Working (tested with "Why is the sky blue?" query)
+
+#### 🔧 API Usage
+```bash
+curl -X POST "https://gemma-1b-wamyzspxga-ew.a.run.app/api/generate" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemma3:1b",
+    "prompt": "Your question here"
+  }'
+```
+
+#### Example Usage
+```bash
+# Test the API with a simple question
+curl -X POST "https://gemma-1b-wamyzspxga-ew.a.run.app/api/generate" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemma3:1b",
+    "prompt": "Explain quantum computing in simple terms"
+  }'
+```
+
 ### Quick Start with Real Data
 ```bash
 # 1. Data is already processed and ready
