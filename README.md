@@ -1,6 +1,6 @@
 # Podcast Persona Debates - Fine-Tuned AI Personalities
 
-> **Fine-tuned GPT-2 models trained on Joe Rogan and Lex Fridman transcripts, deployed as production APIs on Google Cloud Run**
+> **Fine-tuned GPT models trained on Joe Rogan and Lex Fridman transcripts, deployed as production APIs on Google Cloud Run**
 
 ## 🎯 Project Overview
 
