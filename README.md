@@ -1,4 +1,18 @@
-# Podcast Persona Debates - Fine-Tuned AI Personalities
+# Agent Debate Arena
+
+Demo : https://www.youtube.com/watch?v=uTgRODOCzYM
+
+
+
+
+<img width="522" height="478" alt="Screenshot 2025-08-04 at 5 13 17 PM" src="https://github.com/user-attachments/assets/bc61c538-ff9f-4123-b7f9-147cb23b1b47" />
+
+
+![IMG_5718](https://github.com/user-attachments/assets/cca0327c-ad1c-478d-9d84-676bd106782e)
+
+
+
+Podcast Persona Debates - Fine-Tuned AI Personalities
 
 > **Fine-tuned GPT models trained on Joe Rogan and Lex Fridman transcripts, deployed as production APIs on Google Cloud Run**
 
